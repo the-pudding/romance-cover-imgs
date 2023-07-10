@@ -8,7 +8,7 @@
     let groupedData = d3.groups(cleanedData, d => d.year)
     
     let w = cleanedData.length/6;
-    console.log(w)
+    console.log(cleanedData.length)
 
     // onMount(() => {
     //     console.log(w)
@@ -20,7 +20,7 @@
     <div class ="books">
         {#each cleanedData as book, i}
             <div class="book" id="book_{book.ISBN}">
-                <img src ="assets/images/img_{book.ISBN}.jpg" />
+                <img src ="/assets/images/img_{book.ISBN}.jpg" alt="a thumbnail book cover of {book.title}">
                 <!-- <p>{book.year}</p> -->
             </div>
         {/each}

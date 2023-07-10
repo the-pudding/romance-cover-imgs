@@ -15,7 +15,7 @@ let options = {
 csvData.forEach((d) => {
     if (d.cover_url !== "Unknown") {
         options.url = d.cover_url;
-        options.dest = `/Users/jandiehm/Sites/romance-covers/static/images/img_${d.ISBN}.jpg`
+        options.dest = `/Users/jandiehm/Sites/romance-covers/static/assets/images/img_${d.ISBN}.jpg`
 
         download.image(options)
             .then(({ filename }) => {
