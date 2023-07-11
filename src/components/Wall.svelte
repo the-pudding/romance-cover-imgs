@@ -1,24 +1,22 @@
 <script>
-    import data from "$data/listings.csv";
     import * as d3 from "d3";
     import { onMount } from "svelte";
 
-    const shelves = [0, 1, 2, 3, 4, 5]
-    let cleanedData = data.filter(d => d.cover_url.includes("http")).filter(d => d["Man partially unclothed"] == "true" || d["Woman partially unclothed"] == "true").sort((a, b) => d3.ascending(a.year, b.year));
-    let groupedData = d3.groups(cleanedData, d => d.year)
-    
-    let w = cleanedData.length/6;
-    console.log(cleanedData.length)
+    const shelves = [0, 1, 2, 3, 4]
+
+    export let data;
+
+    let w = data.length/6;
 
     // onMount(() => {
     //     console.log(w)
     // })
-
 </script>
 
+<!-- <section id="wall" style="transform: translateX(-{scrollY}px)"> -->
 <section id="wall">
     <div class ="books">
-        {#each cleanedData as book, i}
+        {#each data as book, i}
             <div class="book" id="book_{book.ISBN}">
                 <img src ="/assets/images/img_{book.ISBN}.jpg" alt="a thumbnail book cover of {book.title}">
                 <!-- <p>{book.year}</p> -->
@@ -41,14 +39,14 @@
 <style>
     #wall {
         width: 100%;
-        height: 80vh;
-        /* overflow-y: hidden; */
-        position: relative;
+        height: 50vh;
+        margin: 15rem 0 0 0;
         padding: 0 5rem;
+        float: left;
     }
     .shelves {
         width: 100%;
-        height: 80vh;
+        height: 50vh;
         position: absolute;
         z-index: 1;
     }
@@ -92,7 +90,7 @@
         z-index: 1;
     }
     .books {
-        height: 80vh;
+        height: 70vh;
         position: absolute;
         z-index: 1000;
         display: flex;
