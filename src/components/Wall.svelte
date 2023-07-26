@@ -6,25 +6,47 @@
 
     export let data;
 
-    let w = data.length/6;
+    let w;
+    let h;
+    let bookWidth = 64;
+    let maxBookHeight = 120;
+    let margins = 32;
+    let bookRows = 5;
 
-    // onMount(() => {
-    //     console.log(w)
-    // })
+    let yearGroups = d3.groups(data, d => d.year)
+    console.log(yearGroups)
+
+    function calcWidth(len) {
+        let bookCols = Math.round((len)/bookRows);
+        let chunkWidth = bookCols == 0 ? bookWidth + margins : bookCols * (bookWidth + margins);
+        return chunkWidth;
+    }
 </script>
 
+<svelte:window bind:innerHeight={h} />
+
 <!-- <section id="wall" style="transform: translateX(-{scrollY}px)"> -->
-<section id="wall">
-    <div class ="books">
-        {#each data as book, i}
-            <div class="book" id="book_{book.ISBN}">
-                <img src ="/assets/images/img_{book.ISBN}.jpg" alt="a thumbnail book cover of {book.title}">
-                <!-- <p>{book.year}</p> -->
+<section id="wall" bind:offsetWidth={w}>
+    {#each yearGroups as year, i}
+        <div class="yearChunk" style="width:{calcWidth(year[1].length)}px;margin-right:{calcWidth(year[1].length)}px">
+            <div class="books">
+                {#each year[1] as book, i}
+                    {#if i == 0}
+                        <div class="book" id="book_{book.ISBN}" style="height:{h/8}px">
+                            <div class="marker">{book.year}</div>
+                            <img src ="/assets/images/img_{book.ISBN}.jpg" alt="a thumbnail book cover of {book.title}">
+                        </div>
+                    {:else}
+                        <div class="book" id="book_{book.ISBN}" style="height:{h/8}px">
+                            <img src ="/assets/images/img_{book.ISBN}.jpg" alt="a thumbnail book cover of {book.title}">
+                        </div>
+                    {/if}
+                {/each}
             </div>
-        {/each}
-    </div>
+        </div>
+    {/each}
     {#if w}
-        <div class="shelves" style="width: {w*100}px">
+        <div class="shelves" style="width: {w}px">
             {#each shelves as shelf, i} 
                 <div class="shelf">
                     <div class="shelf-front"></div>
@@ -38,10 +60,13 @@
 
 <style>
     #wall {
-        width: 100%;
-        height: 50vh;
-        margin: 15rem 0 0 0;
+        margin: 0 0 0;
         padding: 0 5rem;
+        display: flex;
+        flex-direction: row;
+    }
+    .yearChunk {
+        height: 100vh;
         float: left;
     }
     .shelves {
@@ -100,11 +125,22 @@
     .book {
         width: 4rem;
         margin: 0 1rem;
-        height: calc(100vh / 8);
+        height: calc(100vh / 5);
         display: flex;
         align-items: end;
+        position: relative;
     }
     .book img {
         box-shadow: -0.25rem 0 1rem  #E4D3D1;
+    }
+    .book .marker {
+        position: absolute;
+        background: pink;
+        font-family: var(--serif);
+        padding: 0.25rem 0.5rem;
+        text-align: center;
+        width: 3.5rem;
+        left: 0.25rem;
+        bottom: -1rem;
     }
 </style>

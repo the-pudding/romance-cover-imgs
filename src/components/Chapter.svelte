@@ -9,7 +9,7 @@
 <svelte:window bind:innerWidth={w} />
 
 <section>
-    <ChapterText />
+    <!-- <ChapterText /> -->
     <Wall data={data}/>
 </section>
 
