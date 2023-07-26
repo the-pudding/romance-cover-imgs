@@ -13,6 +13,9 @@
     let margins = 32;
     let bookRows = 5;
 
+    let scrollY = 0;
+	let containerElement;
+
     let yearGroups = d3.groups(data, d => d.year)
     console.log(yearGroups)
 
@@ -25,7 +28,6 @@
 
 <svelte:window bind:innerHeight={h} />
 
-<!-- <section id="wall" style="transform: translateX(-{scrollY}px)"> -->
 <section id="wall" bind:offsetWidth={w}>
     {#each yearGroups as year, i}
         <div class="yearChunk" style="width:{calcWidth(year[1].length)}px;margin-right:{calcWidth(year[1].length)}px">
@@ -46,7 +48,7 @@
         </div>
     {/each}
     {#if w}
-        <div class="shelves" style="width: {w}px">
+        <div class="shelves" style="width:{calcWidth(data.length + 10)}px">
             {#each shelves as shelf, i} 
                 <div class="shelf">
                     <div class="shelf-front"></div>
@@ -64,10 +66,7 @@
         padding: 0 5rem;
         display: flex;
         flex-direction: row;
-    }
-    .yearChunk {
         height: 100vh;
-        float: left;
     }
     .shelves {
         width: 100%;

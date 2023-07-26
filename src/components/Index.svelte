@@ -1,5 +1,5 @@
 <script>
-	import { getContext } from "svelte";
+	import { getContext, onMount } from "svelte";
 	import Header from "$components/Header.svelte";
 	import Intro from "$components/Intro.svelte";
 	import ScrollText from "$components/ScrollText.svelte";
@@ -21,9 +21,9 @@
 	let illustrationData = data.filter(d => d.cover_url.includes("http")).filter(d => d.Style == "Illustrated").sort((a, b) => d3.ascending(a["Year Season"], b["Year Season"]));
 	let raceData = data.filter(d => d.cover_url.includes("http")).filter(d => d["Has POC"] == "true").sort((a, b) => d3.ascending(a["Year Season"], b["Year Season"]));
 
-	console.log(raunchinessData, illustrationData, raceData)
+	console.log(raunchinessData, illustrationData, raceData);
 
-	//on mouse hweel 
+	//on mouse wheel 
 	function onScroll(e) {
 		if (scrollY >= 0) {
 			scrollY+=e.deltaY;
@@ -31,19 +31,26 @@
 			scrollY = 0
 		}
 	}
+	$: console.log(scrollY)
 </script>
 
+<svelte:window bind:scrollY={scrollY} />
+
 <!-- <Header /> -->
-<Wall data={raunchinessData} />
-<!-- <ScrollText scrollY={scrollY}/> -->
-<!-- <BarChart /> -->
-<!-- <div class="spacer" style="height:{horizW}px"></div> -->
-<!-- <Footer /> -->
+<div on:mousewheel={onScroll}
+	bind:this={containerElement}
+	bind:clientWidth={w}
+	class="scrollContainer"
+	style="transform: translateX(-{scrollY}px);
+	width:{w}px">
+	<Wall data={raunchinessData} />
+</div>
+<div class="spacer"></div>
 
 <style>
-	.horiz {
+	.scrollContainer {
 		width: 100%;
-		height: 100vh;
 		position: fixed;
+		height: 100vh;
 	}
 </style>
