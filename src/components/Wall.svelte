@@ -1,6 +1,8 @@
 <script>
     import * as d3 from "d3";
     import { onMount } from "svelte";
+    import inView from "$actions/inView.js";
+    import { highlightYear } from "$stores/misc.js";
 
     const shelves = [0, 1, 2, 3, 4]
 
@@ -24,13 +26,23 @@
         let chunkWidth = bookCols == 0 ? bookWidth + margins : bookCols * (bookWidth + margins);
         return chunkWidth;
     }
+
+    function setHighlightYear(year) {
+        highlightYear.set(year)
+    }
+
+    $: console.log($highlightYear)
 </script>
 
 <svelte:window bind:innerHeight={h} />
 
 <section id="wall" bind:offsetWidth={w}>
     {#each yearGroups as year, i}
-        <div class="yearChunk" style="width:{calcWidth(year[1].length)}px;margin-right:{calcWidth(year[1].length)}px">
+        <div class="yearChunk" id="chunk-{year[0]}"
+        use:inView={{ right: w/2 }}
+        on:enter={() => setHighlightYear(year[0])}
+        on:exit={() => console.log("exit")}
+        style="width:{calcWidth(year[1].length)}px;margin-right:{calcWidth(year[1].length)}px">
             <div class="books">
                 {#each year[1] as book, i}
                     {#if i == 0}
@@ -62,7 +74,7 @@
 
 <style>
     #wall {
-        margin: 0 0 0;
+        margin: 10rem 0 0 0;
         padding: 0 5rem;
         display: flex;
         flex-direction: row;

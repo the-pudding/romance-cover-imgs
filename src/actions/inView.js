@@ -29,10 +29,12 @@ export default function inView(node, params = {}) {
 		}
 	};
 
-	const setObserver = ({ root, top, bottom }) => {
+	const setObserver = ({ root, top, bottom, left, right }) => {
 		const marginTop = top ? top * -1 : 0;
 		const marginBottom = bottom ? bottom * -1 : 0;
-		const rootMargin = `${marginTop}px 0px ${marginBottom}px 0px`;
+		const marginLeft = left ? left * -1 : 0;
+		const marginRight = right ? right * -1 : 0;
+		const rootMargin = `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`;
 		const options = { root, rootMargin };
 		if (observer) observer.disconnect();
 		observer = new IntersectionObserver(handleIntersect, options);;

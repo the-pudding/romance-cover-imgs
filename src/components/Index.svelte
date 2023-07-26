@@ -31,7 +31,6 @@
 			scrollY = 0
 		}
 	}
-	$: console.log(scrollY)
 </script>
 
 <svelte:window bind:scrollY={scrollY} />
@@ -45,7 +44,8 @@
 	width:{w}px">
 	<Wall data={raunchinessData} />
 </div>
-<div class="spacer"></div>
+<ScrollText />
+<BarChart data={raunchinessData} />
 
 <style>
 	.scrollContainer {
