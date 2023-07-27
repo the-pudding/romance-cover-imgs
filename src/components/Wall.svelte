@@ -4,22 +4,27 @@
     import inView from "$actions/inView.js";
     import { highlightYear } from "$stores/misc.js";
 
-    const shelves = [0, 1, 2, 3, 4]
-
     export let data;
+    export let value;
 
-    let w;
-    let h;
+    const shelves = [0, 1, 2, 3, 4];
     let bookWidth = 64;
-    let maxBookHeight = 120;
     let margins = 32;
     let bookRows = 5;
+    let xShift;
+    let h;
+    let stop1_raunchiness;
+    let stop2_raunchiness;
+    let stop3_raunchiness;
+    let stop4_raunchiness;
 
-    let scrollY = 0;
-	let containerElement;
+    let yearGroups = d3.groups(data, d => d.year);
 
-    let yearGroups = d3.groups(data, d => d.year)
-    console.log(yearGroups)
+    onMount(() => {
+		stop1_raunchiness = d3.select("#book_9780345543790").node().getBoundingClientRect().x;
+        stop2_raunchiness = d3.select("#book_9780062448026").node().getBoundingClientRect().x;
+        stop3_raunchiness = d3.select("#book_9781335458520").node().getBoundingClientRect().x;
+	})
 
     function calcWidth(len) {
         let bookCols = Math.round((len)/bookRows);
@@ -27,21 +32,26 @@
         return chunkWidth;
     }
 
-    function setHighlightYear(year) {
-        highlightYear.set(year)
+    function horizShift(value) {
+         if (value == 0 || value == undefined) {
+            xShift = 0;
+         } else if (value == 1) {
+            xShift = stop1_raunchiness - margins;
+         } else if (value == 2) {
+            xShift =  stop2_raunchiness - margins;
+         } else if (value == 3) {
+            xShift =  stop3_raunchiness - margins;
+         }
     }
 
-    $: console.log($highlightYear)
+    $: value, horizShift(value);
 </script>
 
 <svelte:window bind:innerHeight={h} />
 
-<section id="wall" bind:offsetWidth={w}>
+<section id="wall" style="transform:translateX(-{xShift}px)">
     {#each yearGroups as year, i}
         <div class="yearChunk" id="chunk-{year[0]}"
-        use:inView={{ right: w/2 }}
-        on:enter={() => setHighlightYear(year[0])}
-        on:exit={() => console.log("exit")}
         style="width:{calcWidth(year[1].length)}px;margin-right:{calcWidth(year[1].length)}px">
             <div class="books">
                 {#each year[1] as book, i}
@@ -59,26 +69,27 @@
             </div>
         </div>
     {/each}
-    {#if w}
-        <div class="shelves" style="width:{calcWidth(data.length + 10)}px">
-            {#each shelves as shelf, i} 
-                <div class="shelf">
-                    <div class="shelf-front"></div>
-                    <div class="shelf-top"></div>
-                    <div class="shelf-shadow"></div>
-                </div>
-            {/each}
-        </div>
-    {/if}
+    <div class="shelves">
+        {#each shelves as shelf, i} 
+            <div class="shelf">
+                <div class="shelf-front"></div>
+                <div class="shelf-top"></div>
+                <div class="shelf-shadow"></div>
+            </div>
+        {/each}
+    </div>
 </section>
 
 <style>
     #wall {
-        margin: 10rem 0 0 0;
+        margin: 0;
         padding: 0 5rem;
         display: flex;
         flex-direction: row;
         height: 100vh;
+        z-index: 1;
+        position: relative;
+        transition: 1s ease-in-out;
     }
     .shelves {
         width: 100%;

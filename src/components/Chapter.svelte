@@ -1,21 +1,26 @@
 <script>
-    import Wall from "$components/Wall.svelte";
+    import WallScrolly from "$components/WallScrolly.svelte";
     import ChapterText from "$components/ChapterText.svelte";
-    let w;
+    import inView from "$actions/inView.js";
+    import { activeSection } from "$stores/misc.js";
 
+    export let id;
     export let data;
+    export let copyBlock;
+    export let copyScroll;
+
+    function setSection(id) { activeSection.set(id); }
 </script>
 
-<svelte:window bind:innerWidth={w} />
-
-<section>
-    <!-- <ChapterText /> -->
-    <Wall data={data}/>
+<section id={id}
+    use:inView
+    on:enter={() => setSection(id)}>
+    <ChapterText copy={copyBlock}/>
+    <WallScrolly data={data} copy={copyScroll} />
 </section>
 
 <style>
     section {
-        display: flex;
-        flex-direction: row;
+        padding: 0 0 10rem 0;
     }
 </style>

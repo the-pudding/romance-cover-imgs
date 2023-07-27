@@ -4,7 +4,7 @@
 
     let w;
     let open = false;
-    export let scrollY;
+   	let scrollY;
 
     $: if (scrollY > 100) {
         open = true;
@@ -12,7 +12,7 @@
 
 </script>
 
-<svelte:window bind:innerWidth={w} />
+<svelte:window bind:innerWidth={w} bind:scrollY={scrollY} />
 
 <section id="intro" style="width:{w}px">
     <div id="book" class:open-book={open} style="width:{w/2.5}px;height:{w/1.6}px">
@@ -44,9 +44,8 @@
 
 <style>
     #intro {
-        position: absolute;
-        top: 0;
-        left: 0;
+		position: sticky;
+		top: 6rem;
         width: 100%;
         height: 100vh;
         display: flex;

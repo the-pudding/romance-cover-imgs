@@ -1,24 +1,22 @@
 <script>
-    import { getContext } from "svelte";
-    const copy = getContext("copy");
+    export let copy;
 </script>
 
 <div class="prose">
-    {#each copy.lookBack as text, i}
-    <p>{@html text.value}</p>
-    {/each}
+    {#if copy}
+        {#each copy as text, i}
+            <p>{@html text.value}</p>
+        {/each}
+    {/if}
 </div>
 
 <style>
     .prose {
-        width: 100%;
         display: flex;
         justify-content: center;
         flex-direction: column;
-        max-width: 60rem;
-        margin: 0 5rem;
+        max-width: 40rem;
+        margin: 0 auto;
         line-height: 2;
-        height: 100vh;
-        overflow-y: hidden;
     }
 </style>
