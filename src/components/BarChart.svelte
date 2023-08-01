@@ -3,37 +3,43 @@
     import { onMount } from "svelte";
     import { highlightYear } from "$stores/misc.js";
     import { fade, fly } from 'svelte/transition';
+    import { activeSection } from "$stores/misc.js";
 
     export let data;
     let w;
-
     let barChartW;
-    $: console.log(data);
-    $: groupedData = d3.groups(data, d => d.year);
+    let dataBars = data[1];
+
+    $: groupedData = d3.groups(dataBars, d => d.year);
 </script>
 
 <svelte:window bind:innerWidth={w} />
 
-<section id="barChart">
-    <p class="label left">2011</p>
+{#if $activeSection !== "intro"}
+<section id="barChart" in:fly={{ y: 200, duration: 2000 }}>
+    <p class="label left" style="color: {data[0]}">2011</p>
     <div class="chart-wrapper" bind:clientWidth={barChartW}>
-        {#each groupedData as year, i}
-            {@const isHighlightYear = $highlightYear == year[0] ? "highlightYear" : ""}
-            <div class="year-bar {isHighlightYear}" 
-            style="height: {year[1].length*1.5}px;
-            width: {barChartW/groupedData.length}px"
-            >
-                {#if $highlightYear == year[0]}
-                    <p class="count count-{isHighlightYear}"
-                    in:fly={{ y: 20, duration: 500 }} out:fade>
-                        {year[1].length}
-                    </p>
-                {/if}
-            </div>
-        {/each}
+        {#if groupedData !== undefined}
+            {#each groupedData as year, i}
+                {@const isHighlightYear = $highlightYear == year[0] ? "highlightYear" : ""}
+                <div class="year-bar {isHighlightYear}" 
+                style="height: {year[1].length*1.5}px;
+                width: {barChartW/groupedData.length}px;
+                background: {data[0]}"
+                >
+                    {#if $highlightYear == year[0]}
+                        <p class="count count-{isHighlightYear}"
+                        in:fly={{ y: 20, duration: 500 }} out:fade>
+                            {year[1].length}
+                        </p>
+                    {/if}
+                </div>
+            {/each}
+        {/if}
     </div>
-    <p class="label right">2023</p>
+    <p class="label right" style="color: {data[0]}">2023</p>
 </section>
+{/if}
 
 <style>
     #barChart {
@@ -46,7 +52,6 @@
         flex-direction: row;
         justify-content: center;
         z-index: 1000;
-        background: linear-gradient(rgba(255, 249, 249, 0), rgba(255, 249, 249, 0.75), rgba(255, 249, 249, 1))
     }
     .chart-wrapper {
         display: flex;
@@ -58,7 +63,6 @@
     }
     .year-bar {
         width: 5rem;
-        background: #F7C1B5;
         margin: 0 0.05rem;
         transition: 0.25s ease-in;
         position: relative;
@@ -85,11 +89,10 @@
         display: flex;
         align-self: flex-end;
         font-family: "Canela";
-        color: #F7C1B5;
-        opacity: 30%;
         font-size: 36px;
         padding: 0;
         line-height: 1;
+        transition: 0.25s ease-in;
     }
     .label.left {
         margin: 0 1rem 0 0;

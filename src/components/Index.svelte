@@ -1,11 +1,12 @@
 <script>
 	import { getContext, onMount } from "svelte";
 	import Header from "$components/Header.svelte";
-	import Intro from "$components/Intro.svelte";
 	import ChapterMarker from "$components/ChapterMarker.svelte";
 	import Chapter from "$components/Chapter.svelte";
 	import BarChart from "$components/BarChart.svelte";
-	import { activeSection } from "$stores/misc.js";
+	import IntroScrolly from "$components/IntroScrolly.svelte";
+	import ReadingList from "$components/ReadingList.svelte";
+	import { activeSection, readingListVisible, readingList } from "$stores/misc.js";
 	// import Footer from "$components/Footer.svelte";
 
 	const copy = getContext("copy");
@@ -24,11 +25,11 @@
 
 	function swapBarData(activeSection) {
 		if (activeSection == "raunchiness") {
-			barData = raunchinessData;
+			barData = ["#4C7DFE", raunchinessData];
 		} else if (activeSection == "illustration") {
-			barData = illustrationData;
+			barData = ["#F7C42D", illustrationData];
 		} else if (activeSection == "race") {
-			barData = raceData;
+			barData = ["#01AFCC", raceData];
 		}
 	}
 	$: activeSection, swapBarData($activeSection)
@@ -37,13 +38,19 @@
 <svelte:window bind:scrollY={scrollY} />
 
 <!-- <Header /> -->
-<Intro />
+<IntroScrolly />
 <ChapterMarker />
 <div class="sections">
 	<Chapter id={"raunchiness"} data={raunchinessData} copyBlock={copy.lookBack} copyScroll={copy.raunchinessScroll} />
 	<Chapter id={"illustration"} data={illustrationData} copyBlock={copy.lookBack} copyScroll={copy.raunchinessScroll} />
+	<Chapter id={"race"} data={raceData} copyBlock={copy.lookBack} copyScroll={copy.raunchinessScroll} />
 </div>
-<BarChart data={barData} />
+{#if $activeSection !== "intro"}
+	<!-- <BarChart data={barData} /> -->
+{/if}
+{#if $readingListVisible == true}
+	<ReadingList data={data}/>
+{/if}
 
 <style>
 	.scrollContainer {

@@ -1,11 +1,12 @@
 <script>
     import * as d3 from "d3";
     import { onMount } from "svelte";
-    import inView from "$actions/inView.js";
-    import { highlightYear } from "$stores/misc.js";
+    import { readingList, highlightYear } from "$stores/misc.js";
+    import Icon from "$components/helpers/Icon.svelte";
 
     export let data;
     export let value;
+    export let section;
 
     const shelves = [0, 1, 2, 3, 4];
     let bookWidth = 64;
@@ -13,24 +14,38 @@
     let bookRows = 5;
     let xShift;
     let h;
+    let w;
     let stop1_raunchiness;
     let stop2_raunchiness;
     let stop3_raunchiness;
     let stop4_raunchiness;
 
     let yearGroups = d3.groups(data, d => d.year);
+    let chunkWidths = [];
+    let totalShelfWidth;
+
+    function calcWidth(len) {
+        let bookCols = Math.round((len)/bookRows);
+        let chunkWidth = bookCols == 0 ? bookWidth + margins : bookCols * (bookWidth + margins);
+        chunkWidths.push(chunkWidth);
+        return chunkWidth;
+    }
+
+    function calcTotalWidth(chunks) {
+        totalShelfWidth = chunks.reduce((a, b) => a + b, 0);
+    }
+
 
     onMount(() => {
 		stop1_raunchiness = d3.select("#book_9780345543790").node().getBoundingClientRect().x;
         stop2_raunchiness = d3.select("#book_9780062448026").node().getBoundingClientRect().x;
         stop3_raunchiness = d3.select("#book_9781335458520").node().getBoundingClientRect().x;
-	})
 
-    function calcWidth(len) {
-        let bookCols = Math.round((len)/bookRows);
-        let chunkWidth = bookCols == 0 ? bookWidth + margins : bookCols * (bookWidth + margins);
-        return chunkWidth;
-    }
+        if (chunkWidths.length == 26) {
+            calcTotalWidth(chunkWidths)
+        }
+        // wallWidth = d3.select(`#wall-${section}`).node().getBoundingClientRect().width;
+	})
 
     function horizShift(value) {
          if (value == 0 || value == undefined) {
@@ -45,11 +60,20 @@
     }
 
     $: value, horizShift(value);
+    $: console.log($readingList)
+
+    function handleBtnClick(e) {
+        let bookID = e.target.parentNode.parentNode.parentNode.id;
+        bookID = bookID.split("_")[1];
+        console.log(bookID);
+        
+        $readingList = [...$readingList, { id: bookID }];
+    }
 </script>
 
-<svelte:window bind:innerHeight={h} />
+<svelte:window bind:innerHeight={h} bind:innerWidth={w} />
 
-<section id="wall" style="transform:translateX(-{xShift}px)">
+<section id="wall-{section}" class="wall" style="transform:translateX(-{xShift}px)">
     {#each yearGroups as year, i}
         <div class="yearChunk" id="chunk-{year[0]}"
         style="width:{calcWidth(year[1].length)}px;margin-right:{calcWidth(year[1].length)}px">
@@ -59,29 +83,37 @@
                         <div class="book" id="book_{book.ISBN}" style="height:{h/8}px">
                             <div class="marker">{book.year}</div>
                             <img src ="/assets/images/img_{book.ISBN}.jpg" alt="a thumbnail book cover of {book.title}">
+                            <button 
+                                on:click={handleBtnClick}
+                            class="add"><Icon name="plus" /></button>
                         </div>
                     {:else}
                         <div class="book" id="book_{book.ISBN}" style="height:{h/8}px">
                             <img src ="/assets/images/img_{book.ISBN}.jpg" alt="a thumbnail book cover of {book.title}">
+                            <button 
+                                on:click={handleBtnClick}
+                                class="add"><Icon name="plus" /></button>
                         </div>
                     {/if}
                 {/each}
             </div>
         </div>
     {/each}
-    <div class="shelves">
-        {#each shelves as shelf, i} 
-            <div class="shelf">
-                <div class="shelf-front"></div>
-                <div class="shelf-top"></div>
-                <div class="shelf-shadow"></div>
-            </div>
-        {/each}
-    </div>
+    {#if totalShelfWidth}
+        <div class="shelves">
+            {#each shelves as shelf, i} 
+                <div class="shelf" style="width:{totalShelfWidth}px">
+                    <div class="shelf-front"></div>
+                    <div class="shelf-top"></div>
+                    <div class="shelf-shadow"></div>
+                </div>
+            {/each}
+        </div>
+    {/if}
 </section>
 
 <style>
-    #wall {
+    .wall {
         margin: 0;
         padding: 0 5rem;
         display: flex;
@@ -153,7 +185,7 @@
         position: relative;
     }
     .book img {
-        box-shadow: -0.25rem 0 1rem  #E4D3D1;
+        box-shadow: -0.25rem 0 1rem  var(--color-gray-100);
     }
     .book .marker {
         position: absolute;
@@ -164,5 +196,25 @@
         width: 3.5rem;
         left: 0.25rem;
         bottom: -1rem;
+    }
+    .add {
+        position: absolute;
+        bottom: -0.75rem;
+        right: -0.75rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 1.5rem;
+        width: 1.5rem;
+        border: 2px solid white;
+        background: var(--color-gray-900);
+        box-shadow: 0.25rem 0 1rem  var(--color-gray-300);
+    }
+    :global(.add svg) {
+        margin-top: 0.25rem;
+    }
+    :global(.add svg line) {
+        stroke: white;
     }
 </style>

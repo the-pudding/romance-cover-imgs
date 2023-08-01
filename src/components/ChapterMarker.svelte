@@ -1,7 +1,11 @@
 <script>
-    import { activeSection } from "$stores/misc.js";
+    import { activeSection, readingListVisible } from "$stores/misc.js";
+    import Icon from "$components/helpers/Icon.svelte";
+    const sections = ["intro", "raunchiness", "illustration", "race"];
 
-    const sections = ["raunchiness", "illustration", "race"]
+    function handleListToggle(initState) {
+        readingListVisible.set(!$readingListVisible);
+    }
 </script>
 
 <nav>
@@ -9,6 +13,15 @@
         {@const active = $activeSection == section ? "active" : ""}
         <button class="sectionBox {active}" id="sectionBox-{section}"></button>
     {/each}
+    <button 
+        on:click={handleListToggle}
+        class="listBtn">
+            {#if $readingListVisible == true}
+                <Icon name="x" />
+            {:else}
+                <Icon name="book-open" />
+            {/if}
+    </button>
 </nav>
 
 <style>
@@ -23,15 +36,13 @@
         align-items: center;
         z-index: 1000;
         height: 3rem;
-        background: linear-gradient(rgba(255, 249, 249, 1), rgba(255, 249, 249, 0.75), rgba(255, 249, 249, 0))
     }
 
     .sectionBox {
         width: 20px;
         height: 20px;
-        background: rgb(247, 193, 181, 0.5);
+        background: white;
         margin: 0 1rem;
-        border: 3px solid #F7C1B5;
         opacity: 0.5;
         transition: 0.25s ease-in-out;
     }
@@ -40,5 +51,25 @@
     }
     .sectionBox:hover {
         opacity: 1; 
+    }
+    #sectionBox-intro {
+        border: 3px solid var(--romance-pink);
+    }
+    #sectionBox-raunchiness {
+        border: 3px solid var(--romance-blue);
+    }
+    #sectionBox-illustration {
+        border: 3px solid var(--romance-yellow);
+    }
+    #sectionBox-race {
+        border: 3px solid var(--romance-teal);
+    }
+
+    .listBtn {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+        background: transparent;
+        z-index: 1000;
     }
 </style>

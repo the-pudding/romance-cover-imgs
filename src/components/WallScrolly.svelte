@@ -5,11 +5,12 @@
 	let value;
     export let data;
     export let copy;
+	export let section;
 </script>
 
 <section id="scrolly">
 	<div class="sticky">
-        <Wall data={data} value={value}/>
+        <Wall data={data} value={value} section={section}/>
     </div>
 	<Scrolly bind:value>
         {#if copy}

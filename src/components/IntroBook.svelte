@@ -3,28 +3,30 @@
     const copy = getContext("copy");
 
     let w;
-    let open = false;
-   	let scrollY;
-
-    $: if (scrollY > 100) {
-        open = true;
-    } else { open = false; }
+	export let value;
+    $: open = value == 0 || value == undefined ? false : true;
 
 </script>
 
-<svelte:window bind:innerWidth={w} bind:scrollY={scrollY} />
+<svelte:window bind:innerWidth={w}/>
 
-<section id="intro" style="width:{w}px">
+<section id="intro-book" style="width:{w}px">
     <div id="book" class:open-book={open} style="width:{w/2.5}px;height:{w/1.6}px">
         <div class="main">
-            <div class="book-font">
+            <div class="book-front">
                 <div class="book-cover">
                 </div>
-                <div class="book-cover-back"></div>
+                <div class="book-cover-back">
+					<div class="book-cover-back-indent">
+						{#each copy.intro as text, i}
+                        	<p>{@html text.value}</p>
+                    	{/each}
+					</div>
+				</div>
             </div>
             <div class="book-page">
                 <div id="page-1" class="page">
-                    {#each copy.intro as text, i}
+                    {#each copy.postIntro as text, i}
                         <p>{@html text.value}</p>
                     {/each}
                 </div>
@@ -70,12 +72,11 @@
 
 /* = Book Font
 -------------------------------------------------------------- */
-	.book-font{
+	.book-front{
 		width: 100%;
         height: 100%;
 		position:absolute; top:0; bottom:0;
 		font-size:15px; text-align:center;
-		text-shadow:0 2px 0 rgba(30,35,45,1);
 		box-shadow:inset 3px 0 10px rgba(0,0,0,0.1); /* 给书本添加光照阴影 */
 		z-index:10;
 		transform-style:preserve-3d;
@@ -103,14 +104,32 @@
 		backface-visibility:hidden;
 		transform:rotate3d(0,1,0,-180deg);
 	}
+	.book-cover-back-indent {
+		width: calc(100% - 1rem);
+		height: calc(100% - 2rem);
+		background: white;
+		margin-top: 1rem;
+		margin-left: 1rem;
+		box-shadow: inset -3px 0 10px rgba(0,0,0,0.1);
+		padding: 3rem 2rem;
+	}
+
+	.book-cover-back-indent p{
+		font-size: var(--16px);
+		line-height: 1.65;
+		margin-bottom: 1rem;
+		text-align: left;
+		padding: 0 0 1rem 0;
+	}
 
 /* = Book Page
 -------------------------------------------------------------- */
 	.book-page{
 		width: calc(100% - 1rem);
-        height: calc(100% - 1rem);
+        height: calc(100% - 2rem);
 		line-height:20px;
-		position:absolute; top:5px;
+		position:absolute;
+		top: 1rem;
 		z-index:9;
 		box-shadow:inset 3px 0 10px rgba(0,0,0,0.1);
 		transform-style:preserve-3d;
@@ -129,8 +148,10 @@
 		margin-bottom:14px;
 	}
 	.book-page p{
-		font-size:13px;
-		margin-bottom:14px;
+		font-size: var(--16px);
+		line-height: 1.65;
+		margin-bottom: 1rem;
+		padding: 0 0 1rem 0;
 	}
 	.page-number{
 		width:100%;
@@ -143,7 +164,7 @@
 /* = Book Back
 -------------------------------------------------------------- */
     .book-back{
-		width: 396px;
+		width:100%;
 		background:#4C7DFE;
 		position:absolute; 
         top:0; 
@@ -214,12 +235,12 @@
 		-o-transform:translate3d(50%,0,0);
 		transform:translate3d(50%,0,0);
 	}
-	.open-book  .book-font{
-		-webkit-transform:translate3d(0,0,25px) rotate3d(0,1,0,-160deg);
-		-moz-transform:translate3d(0,0,25px) rotate3d(0,1,0,-160deg);
-		-ms-transform:translate3d(0,0,25px) rotate3d(0,1,0,-160deg);
-		-o-transform:translate3d(0,0,25px) rotate3d(0,1,0,-160deg);
-		transform:translate3d(0,0,25px) rotate3d(0,1,0,-160deg);
+	.open-book  .book-front{
+		-webkit-transform:translate3d(0,0,25px) rotate3d(0,1,0,-180deg);
+		-moz-transform:translate3d(0,0,25px) rotate3d(0,1,0,-180deg);
+		-ms-transform:translate3d(0,0,25px) rotate3d(0,1,0,-180deg);
+		-o-transform:translate3d(0,0,25px) rotate3d(0,1,0,-180deg);
+		transform:translate3d(0,0,25px) rotate3d(0,1,0,-180deg);
 	}
 	/* .open-book:hover .main{
 		-webkit-transform:rotate3d(1,1,0,15deg);
