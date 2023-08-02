@@ -15,6 +15,7 @@
     let xShift;
     let h;
     let w;
+    let bookAdded = false;
     let stop1_raunchiness;
     let stop2_raunchiness;
     let stop3_raunchiness;
@@ -60,14 +61,35 @@
     }
 
     $: value, horizShift(value);
-    $: console.log($readingList)
+    $: console.log($readingList);
+
+    function findBookMatch(id) {
+        let match = $readingList.find(d => d.name == id);
+    }
 
     function handleBtnClick(e) {
+        let btn = d3.select(this);
+
         let bookID = e.target.parentNode.parentNode.parentNode.id;
+            if (bookID == "") {
+                bookID = e.target.parentNode.parentNode.parentNode.parentNode.id;
+            }
+            if (bookID.includes("chunk")) {
+                bookID = e.target.parentNode.parentNode.parentNode.id; 
+            }
         bookID = bookID.split("_")[1];
-        console.log(bookID);
+
+        if ((this.className).includes("book_inList")) {
+            btn.classed("book_inList", false);
+            btn.classed("book_noList", true); 
+            const indexOfObject = $readingList.findIndex(object => { return object.id == bookID })
+            $readingList.splice(indexOfObject, 1)
+        } else {
+            btn.classed("book_inList", true)
+            btn.classed("book_noList", false); 
+            $readingList = [...$readingList, { id: bookID }];
+        }
         
-        $readingList = [...$readingList, { id: bookID }];
     }
 </script>
 
@@ -81,18 +103,20 @@
                 {#each year[1] as book, i}
                     {#if i == 0}
                         <div class="book" id="book_{book.ISBN}" style="height:{h/8}px">
-                            <div class="marker">{book.year}</div>
                             <img src ="/assets/images/img_{book.ISBN}.jpg" alt="a thumbnail book cover of {book.title}">
                             <button 
                                 on:click={handleBtnClick}
-                            class="add"><Icon name="plus" /></button>
+                            class="add book_noList"><Icon name="plus" /></button>
+                            <p>Book added!</p>
+                            <!-- <div class="marker">{book.year}</div> -->
                         </div>
                     {:else}
                         <div class="book" id="book_{book.ISBN}" style="height:{h/8}px">
                             <img src ="/assets/images/img_{book.ISBN}.jpg" alt="a thumbnail book cover of {book.title}">
                             <button 
                                 on:click={handleBtnClick}
-                                class="add"><Icon name="plus" /></button>
+                                class="add book_noList"><Icon name="plus" /></button>
+                            <p>Book added!</p>
                         </div>
                     {/if}
                 {/each}
@@ -184,6 +208,13 @@
         align-items: end;
         position: relative;
     }
+    /* .book:hover img {
+        -webkit-transform:rotate3d(0,1,0,-30deg);
+		-moz-transform:rotate3d(0,1,0,-30deg);
+		-ms-transform:rotate3d(0,1,0,-30deg);
+		-o-transform:rotate3d(0,1,0,-30deg);
+		transform:rotate3d(0,1,0,-30deg);
+    } */
     .book img {
         box-shadow: -0.25rem 0 1rem  var(--color-gray-100);
     }
@@ -207,9 +238,20 @@
         justify-content: center;
         height: 1.5rem;
         width: 1.5rem;
+        background-color: none;
         border: 2px solid white;
-        background: var(--color-gray-900);
         box-shadow: 0.25rem 0 1rem  var(--color-gray-300);
+        transition: 0.25s rotate ease-in-out, 1s background-color 0.25s;
+    }
+    :global(.add.book_noList) {
+        transform: rotate(0deg);
+        background-color: var(--color-gray-900);
+        transition: 0.25s rotate ease-in-out, 1s background-color 0.25s;
+    }
+    :global(.add.book_inList) {
+        transform: rotate(45deg);
+        background-color: var(--romance-pink);
+        transition: 0.25s rotate ease-in-out, 1s background-color 0.25s;
     }
     :global(.add svg) {
         margin-top: 0.25rem;

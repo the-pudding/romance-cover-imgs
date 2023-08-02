@@ -6,11 +6,11 @@
     import { activeSection } from "$stores/misc.js";
 
     export let data;
+    export let color;
     let w;
     let barChartW;
-    let dataBars = data[1];
 
-    $: groupedData = d3.groups(dataBars, d => d.year);
+    $: groupedData = d3.groups(data, d => d.year);
 </script>
 
 <svelte:window bind:innerWidth={w} />
@@ -25,14 +25,12 @@
                 <div class="year-bar {isHighlightYear}" 
                 style="height: {year[1].length*1.5}px;
                 width: {barChartW/groupedData.length}px;
-                background: {data[0]}"
+                background: {color}"
                 >
-                    {#if $highlightYear == year[0]}
-                        <p class="count count-{isHighlightYear}"
-                        in:fly={{ y: 20, duration: 500 }} out:fade>
-                            {year[1].length}
-                        </p>
-                    {/if}
+                    <p class="count count-{isHighlightYear}"
+                    in:fly={{ y: 20, duration: 500 }} out:fade>
+                        {year[1].length}
+                    </p>
                 </div>
             {/each}
         {/if}
@@ -78,7 +76,7 @@
         text-align: center;
         top: -1.5rem;
         transition: 0.25s ease-in;
-        opacity: 0;
+        opacity: 1;
     }
     .count-highlightYear {
         opacity: 1;

@@ -3,7 +3,7 @@
     import Icon from "$components/helpers/Icon.svelte";
     export let data;
 
-    console.log(data);
+    let displayList = $readingList
 
     function findBookMatch(id, type) {
         let match = data.find(d => d.ISBN == id);
@@ -16,17 +16,19 @@
 <section id="reading-list">
     <div class="paper">
         <h3>Your Reading List</h3>
-        {#if $readingList.length > 1}
+        {#if $readingList.length > 0}
             <ul>
                 {#each $readingList as book, i}
-                <li>
-                    <img src ="/assets/images/img_{findBookMatch(book.id, "img")}.jpg" alt="a thumbnail book cover of {findBookMatch(book.id, "title")}">
-                    <div class="details">
-                        <p class="title">{findBookMatch(book.id, "title")}</p>
-                        <p class="author">By Author Name</p>
-                    </div>
-                    <button class="remove"><Icon name="x" /></button>
-                </li>
+                {#if book.id !== undefined}
+                    <li>
+                        <img src ="/assets/images/img_{findBookMatch(book.id, "img")}.jpg" alt="a thumbnail book cover of {findBookMatch(book.id, "title")}">
+                        <div class="details">
+                            <p class="title">{findBookMatch(book.id, "title")}</p>
+                            <p class="author">By Author Name</p>
+                        </div>
+                        <button class="remove"><Icon name="x" /></button>
+                    </li>
+                {/if}
                 {/each}
             </ul>
         {:else}

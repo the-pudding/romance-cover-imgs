@@ -10,8 +10,8 @@
 
 <svelte:window bind:innerWidth={w}/>
 
-<section id="intro-book" style="width:{w}px">
-    <div id="book" class:open-book={open} style="width:{w/2.5}px;height:{w/1.6}px">
+<section id="intro-book">
+    <div id="book" class:open-book={open} >
         <div class="main">
             <div class="book-front">
                 <div class="book-cover">
@@ -45,17 +45,19 @@
 </section>
 
 <style>
-    #intro {
+    #intro-book {
 		position: sticky;
-		top: 6rem;
+		top: 0rem;
         width: 100%;
-        height: 100vh;
+        height: auto;
         display: flex;
         flex-direction: row;
         justify-content: center;
-        margin: 5rem 0 0 0;
+        margin: 0 0 0 0;
     }
 	#book {
+		width: 30%;
+		height: auto;
 		margin: 0 auto;
 		position: relative;
 		transition-duration: .5s;
@@ -68,6 +70,7 @@
 		position: relative;
 		transform-style: preserve-3d;
 		transition-duration: .5s;
+		aspect-ratio: 1/1.475;
 	}
 
 /* = Book Font
@@ -90,7 +93,7 @@
 		overflow:hidden;
 		position:absolute; top:0; bottom:0;
 		background: url("assets/images/Alice_sketch_3.jpg");
-        background-size: cover;
+        background-size: contain;
         background-repeat: no-repeat;
 		transform-style:preserve-3d;
 		backface-visibility:hidden;
@@ -206,7 +209,7 @@
 		background:var(--color-white);
 	}
 	.book-right{
-		width:50px; height:550px;
+		width:50px; height:100%;
 		position:absolute; top:5px; right:-20px;
 		box-shadow:0 1px 0 var(--color-white),0 -1px 0 var(--color-white);
 		transform:rotate3d(0,1,0,90deg);
@@ -227,6 +230,14 @@
 
 /* = Flip
 -------------------------------------------------------------- */
+	/* Cover */
+	#book:hover .main{
+		-webkit-transform:rotate3d(0,1,0,-30deg);
+		-moz-transform:rotate3d(0,1,0,-30deg);
+		-ms-transform:rotate3d(0,1,0,-30deg);
+		-o-transform:rotate3d(0,1,0,-30deg);
+		transform:rotate3d(0,1,0,-30deg);
+	}
 	/* Open */
 	.open-book{
 		-webkit-transform:translate3d(50%,0,0);
@@ -242,11 +253,11 @@
 		-o-transform:translate3d(0,0,25px) rotate3d(0,1,0,-180deg);
 		transform:translate3d(0,0,25px) rotate3d(0,1,0,-180deg);
 	}
-	/* .open-book:hover .main{
+	.open-book:hover .main{
 		-webkit-transform:rotate3d(1,1,0,15deg);
 		-moz-transform:rotate3d(1,1,0,15deg);
 		-ms-transform:rotate3d(1,1,0,15deg);
 		-o-transform:rotate3d(1,1,0,15deg);
 		transform:rotate3d(1,1,0,15deg);
-	} */
+	}
 </style>

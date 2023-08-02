@@ -15,7 +15,7 @@
 
 <section id="intro"
     use:inView
-    on:enter={() => setSection(id)}>>
+    on:enter={() => setSection(id)}>
 	<div class="sticky">
         <IntroBook value={value}/>
     </div>

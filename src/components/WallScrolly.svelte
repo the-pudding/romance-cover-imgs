@@ -44,6 +44,7 @@
         z-index: 999;
         max-width: 30rem;
         margin: 0 auto;
+		pointer-events: none;
 	}
 
 	.step p {
@@ -51,5 +52,6 @@
         text-align: left;
         padding: 2rem;
         background: var(--color-white);
+		pointer-events: none;
 	}
 </style>

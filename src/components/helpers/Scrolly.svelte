@@ -83,5 +83,6 @@
 	div {
 		z-index: 999;
 		position: relative;
+		pointer-events: none;
 	}
 </style>
