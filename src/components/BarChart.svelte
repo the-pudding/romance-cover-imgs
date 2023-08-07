@@ -49,7 +49,7 @@
         display: flex;
         flex-direction: row;
         justify-content: center;
-        z-index: 1000;
+        z-index: 999;
     }
     .chart-wrapper {
         display: flex;

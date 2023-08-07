@@ -14,6 +14,7 @@
 	let scrollY = 0;
 	let containerElement;
 	let w;
+	let body;
 
 	import data from "$data/listings.csv";
     import * as d3 from "d3";
@@ -23,6 +24,22 @@
 	let raceData = data.filter(d => d.cover_url.includes("http")).filter(d => d["Has POC"] == "true").sort((a, b) => d3.ascending(a["Year Season"], b["Year Season"]));
 	let barData = raunchinessData;
 	let barColor = "#4C7DFE";
+	
+	onMount(() => {
+		body = d3.select("body")
+		setScroll($readingListVisible)
+	})
+
+	function setScroll(readingListVisible) {
+		console.log(readingListVisible)
+		if (body) {
+			if (readingListVisible == false) {
+				body.style("overflow-y", "auto")
+			} else {
+				body.style("overflow-y", "hidden")
+			}
+		}
+	}
 
 	function swapBarData(activeSection) {
 		if (activeSection == "raunchiness") {
@@ -37,6 +54,7 @@
 		}
 	}
 	$: activeSection, swapBarData($activeSection)
+	$: readingListVisible, setScroll($readingListVisible)
 </script>
 
 <svelte:window bind:scrollY={scrollY} />
