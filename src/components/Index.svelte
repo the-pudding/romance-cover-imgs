@@ -31,7 +31,6 @@
 	})
 
 	function setScroll(readingListVisible) {
-		console.log(readingListVisible)
 		if (body) {
 			if (readingListVisible == false) {
 				body.style("overflow-y", "auto")

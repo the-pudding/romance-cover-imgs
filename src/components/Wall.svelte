@@ -61,7 +61,6 @@
     }
 
     $: value, horizShift(value);
-    $: console.log($readingList);
 
     function findBookMatch(id) {
         let match = $readingList.find(d => d.name == id);
