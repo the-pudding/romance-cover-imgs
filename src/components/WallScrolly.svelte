@@ -3,14 +3,19 @@
     import Wall from "$components/Wall.svelte";
     import { getContext } from "svelte";
 	let value;
+	let stepData;
     export let data;
     export let copy;
 	export let section;
+
+	function getData(value) { stepData = copy[value] }
+
+	$: getData(value)
 </script>
 
 <section id="scrolly">
 	<div class="sticky">
-        <Wall data={data} value={value} section={section}/>
+        <Wall data={data} value={value} stepData={stepData} section={section}/>
     </div>
 	<Scrolly bind:value>
         {#if copy}

@@ -6,6 +6,7 @@
 
     export let data;
     export let value;
+    export let stepData;
     export let section;
 
     const shelves = [0, 1, 2, 3, 4];
@@ -61,10 +62,7 @@
     }
 
     $: value, horizShift(value);
-
-    function findBookMatch(id) {
-        let match = $readingList.find(d => d.name == id);
-    }
+    $: console.log(stepData);
 </script>
 
 <svelte:window bind:innerHeight={h} bind:innerWidth={w} />
