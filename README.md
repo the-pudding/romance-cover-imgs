@@ -24,4 +24,4 @@ Downloads all cover thumbnail images from the `cover_url` column in `src/data/li
 
 ## Notes
 
-Korean names, where the last name appears before the first name, were later manually untagged as hyphenated names. Players were grouped into decades by the season in which they played in their first professional game. When seasons spanned multiple years (i.e. 1979-1980), the last year was used as the decade. The reasons for hyphenation were manually researched and added into `sportsCombinedNames_withReasons.csv`.
+Google Books does occasionally update their thumbnails so what they display (and what you download) today might not be a match for the images in this repo.
