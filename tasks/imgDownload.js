@@ -10,8 +10,6 @@ let options = {
     dest: "",
 };
 
-// console.log(listingData);
-
 csvData.forEach((d) => {
     if (d.cover_url !== "Unknown") {
         options.url = d.cover_url;
